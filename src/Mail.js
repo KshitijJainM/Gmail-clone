@@ -14,8 +14,11 @@ import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
 import PrintIcon from "@material-ui/icons/Print";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { useHistory } from "react-router-dom";
+import { selectOpenMail } from "./features/mailSlice";
+import { useSelector } from "react-redux";
 function Mail() {
 	const history = useHistory();
+	const selectedMail = useSelector(selectOpenMail);
 	return (
 		<div className="mail">
 			<div className="mail__tools">
@@ -62,13 +65,13 @@ function Mail() {
 			</div>
 			<div className="mail__body">
 				<div className="mail__bodyHeader">
-					<h2>Subject</h2>
+					<h2>{selectedMail?.subject}</h2>
 					<LabelImportantIcon className="mail__important" />
-					<p>Title</p>
-					<p className="mail__time">10pm</p>
+					<p>{selectedMail?.title}</p>
+					<p className="mail__time">{selectedMail?.time}</p>
 				</div>
 				<div className="mail__message">
-					<p>this is a message</p>
+					<p>{selectedMail?.description}</p>
 				</div>
 			</div>
 		</div>

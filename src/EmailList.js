@@ -13,7 +13,23 @@ import InboxIcon from "@material-ui/icons/Inbox";
 import GroupIcon from "@material-ui/icons/Group";
 import LocalOfferIcon from "@material-ui/icons/LocalOffer";
 import Section from "./Section";
+import { db } from "./firebase";
+import { useEffect, useState } from "react";
+import { selectedMail } from "./features/mailSlice";
 function EmailList() {
+	const [emails, setEmails] = useState([]);
+	useEffect(() => {
+		db.collection("emails")
+			.orderBy("timestamp", "desc")
+			.onSnapshot((snapshot) => {
+				setEmails(
+					snapshot.docs.map((doc) => ({
+						id: doc.id,
+						data: doc.data(),
+					})),
+				);
+			});
+	}, []);
 	return (
 		<div className="emailList">
 			<div className="emailList__settings">
@@ -60,12 +76,15 @@ function EmailList() {
 				/>
 			</div>
 			<div className="emailList__list">
-				<EmailRow
-					title="Hello"
-					subject="Hey Man Whats'up "
-					description="test msg"
-					time="10pm"
-				/>
+				{emails.map(({ id, data }) => (
+					<EmailRow
+						key={id}
+						title={data.to}
+						time={new Date(data.timestamp?.seconds * 1000).toUTCString()}
+						description={data.message}
+						subject={data.subject}
+					/>
+				))}
 			</div>
 		</div>
 	);
